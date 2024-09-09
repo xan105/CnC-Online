@@ -29,6 +29,11 @@ But the core issue for me was that it didn't work with the Steam version nor wit
 
 I aimed to restore the online features of *Red Alert 3* without relying on their launcher. Given how straightforward it was to re-enable these features in the client, it feels criminal to not open source this solution and share the knowledge.
 
+<p align="center">
+  <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/linux_proton.png">
+  <em>Connected to C&C:Online under 🐧 Linux/Proton 9.0-2 (Fedora)</em>
+</p>
+
 ## Reminder
 
 Please be reminded that *Red Alert 3* still requires a bunch of ports to be opened to play online:
