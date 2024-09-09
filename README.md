@@ -8,7 +8,8 @@ This project provides a patch through DLL injection to restore online play featu
 
 This patch is designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
 
-**Note:** Although this patch should technically be compatible with the other supported games, testing has been limited to *Red Alert 3*, which is the primary focus of this project.
+> [!NOTE]
+> Although this patch should technically be compatible with the other supported games, testing has been limited to *Red Alert 3*, which is the primary focus of this project.
 
 ## How does it work ?
 
@@ -36,7 +37,8 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
 
 ## Reminder
 
-Please be reminded that *Red Alert 3* still requires a bunch of ports to be opened to play online:
+> [!TIP]
+> Please be reminded that *Red Alert 3* still requires a bunch of ports to be opened to play online:
 
 |PORT|DESCRIPTION|
 |----|-----------|
