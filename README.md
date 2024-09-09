@@ -6,7 +6,7 @@
 
 This project provides a patch through DLL injection to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process.
 
-This patch is designed to work with my [RA3.exe reimplementation/alternative](...), but it can also be used with any DLL injection tool of your choice.
+This patch is designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
 
 **Note:** Although this patch should technically be compatible with the other supported games, testing has been limited to *Red Alert 3*, which is the primary focus of this project.
 
