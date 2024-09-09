@@ -17,6 +17,11 @@ Upon injection into the game process, the patch DLL performs the following actio
 - Find and replace the original EA public key with the CnC-Online key.
 - Hook _ws2_32_ (winsock2) `send()` and `gethostbyname()` Win32 API calls to redirect them to the CnC Online GameSpy server emulation service.
 
+<p align="center">
+  <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/welcome_back_commander.png">
+  <em>Connected to C&C:Online</em>
+</p>
+
 ## Why not use the official CnC-Online launcher ?
 
 While "Launchers inception" _(Launcher which starts another Launcher)_ is despised by many it remains a matter of personal preference.
