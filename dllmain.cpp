@@ -11,7 +11,6 @@ found in the LICENSE file in the root directory of this source tree.
 #include <iostream>
 #include <Psapi.h>
 #include <vector>
-#include <array>
 #include <string>
 #include <memory>
 #include <algorithm>
