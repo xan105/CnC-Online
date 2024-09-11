@@ -25,8 +25,8 @@ Upon injection into the game process, the patch DLL performs the following actio
 
 ## Why not use the official CnC-Online launcher ?
 
-While "Launchers inception" _(Launcher which starts another Launcher)_ is despised by many it remains a matter of personal preference.
-But the core issue for me was that it didn't work with the Steam version nor with Linux/Proton when I tried it.
+While _"Launchers inception"_ (Launcher which starts another Launcher) is despised by many it remains a matter of personal preference. 
+But for me the core issue was that their launcher didn't work with the Steam version nor with Linux/Proton when I tried it.
 
 I aimed to restore the online features of *Red Alert 3* without relying on their launcher. Given how straightforward it was to re-enable these features in the client, it feels criminal to not open source this solution and share the knowledge.
 
