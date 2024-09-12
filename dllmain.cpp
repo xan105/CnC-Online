@@ -24,12 +24,11 @@ found in the LICENSE file in the root directory of this source tree.
 
 typedef int (WSAAPI *send_t)(SOCKET s, const char *buf, int len, int flags);
 typedef struct hostent* (WSAAPI *gethostbyname_t)(const char *name);
+typedef HINSTANCE(WINAPI* ShellExecuteW_t)(HWND, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR, INT);
 
 send_t pSend = nullptr;
 gethostbyname_t pGetHostByName = nullptr;
-
-int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags);
-struct hostent* WSAAPI detourGetHostByName(const char *name);
+ShellExecuteW_t pShellExecuteW = nullptr;
 
 std::vector<BYTE> eaPublicKey = {
     0x92, 0x75, 0xA1, 0x5B, 0x08, 0x02, 0x40, 0xB8,
@@ -68,6 +67,22 @@ std::vector<BYTE> cncOnlinePublicKey = {
     0xD0, 0x40, 0x26, 0x32, 0xC1, 0xA1, 0x80, 0xAD,
     0x0D, 0x07, 0xE5, 0xAD, 0x93, 0x0D, 0x2D, 0xF5
 };
+
+HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpFile, LPCWSTR lpParameters, LPCWSTR lpDirectory, INT nShowCmd)
+{
+    std::wstring file(lpFile);
+
+    if (wcscmp(lpOperation, L"open") == 0) {
+        if (file == L"http://profile.ea.com/") { //RA3 Register Account button
+            file = L"https://cnc-online.net/en/connect/register/";
+        }
+        else if (file.find(L"http://www.ea.com/redalert/") == 0 ) { //RA3 CnC Website button
+            file = L"https://cnc-online.net/en";
+        }
+    }
+
+    return pShellExecuteW(hwnd, lpOperation, file.c_str(), lpParameters, lpDirectory, nShowCmd);
+}
 
 
 int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
@@ -289,12 +304,21 @@ bool setDetours() {
         std::cerr << "Failed to load ws2_32.dll!" << std::endl;
         return FALSE;
     }
-
     // Get addresses of the functions to be hooked
     pSend = (send_t)GetProcAddress(ws2_32, "send");
     pGetHostByName = (gethostbyname_t)GetProcAddress(ws2_32, "gethostbyname");
 
-    if (pSend == nullptr || pGetHostByName == nullptr) {
+    // Load the shell32.dll module
+    static HMODULE shell32 = nullptr;
+    shell32 = LoadLibrary(L"shell32.dll");
+    if (shell32 == nullptr) {
+        std::cerr << "Failed to load Shell32.dll!" << std::endl;
+        return FALSE;
+    }
+    // Get addresses of the functions to be hooked
+    pShellExecuteW = (ShellExecuteW_t)GetProcAddress(shell32, "ShellExecuteW");
+
+    if (pSend == nullptr || pGetHostByName == nullptr || pShellExecuteW == nullptr) {
         std::cerr << "Failed to get function addresses!" << std::endl;
         return FALSE;
     }
@@ -304,6 +328,8 @@ bool setDetours() {
     DetourUpdateThread(GetCurrentThread());
     DetourAttach(&(PVOID&)pSend, detourSend);
     DetourAttach(&(PVOID&)pGetHostByName, detourGetHostByName);
+    DetourAttach(&(PVOID&)pShellExecuteW, detourShellExecuteW);
+
     if (DetourTransactionCommit() != NO_ERROR) {
         std::cerr << "Failed to attach hooks!" << std::endl;
         return FALSE;
