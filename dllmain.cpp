@@ -367,7 +367,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     switch (ul_reason_for_call) {
         case DLL_PROCESS_ATTACH: {
             DisableThreadLibraryCalls(hModule);
-            CreateThread(nullptr, 0, Main, hModule, 0, nullptr);
+            HANDLE hThread = CreateThread(nullptr, 0, Main, hModule, 0, nullptr);
+            if (hThread) {
+                CloseHandle(hThread);
+            }
             break;
         }
     }
