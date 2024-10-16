@@ -14,12 +14,12 @@ found in the LICENSE file in the root directory of this source tree.
 #include <string>
 #include <memory>
 #include <algorithm>
-#include "detours.h"
+#include "vendor/Detour/detours.h"
 
 #if defined(_X86_)
-#pragma comment(lib, "detours.x86.lib")
+#pragma comment(lib, "vendor/Detour/detours.x86.lib")
 #elif defined(_AMD64_)
-#pragma comment(lib, "detours.x64.lib")
+#pragma comment(lib, "vendor/Detour/detours.x64.lib")
 #endif
 
 typedef int (WSAAPI *send_t)(SOCKET s, const char *buf, int len, int flags);
