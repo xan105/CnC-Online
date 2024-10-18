@@ -5,22 +5,8 @@ found in the LICENSE file in the root directory of this source tree.
 */
 
 #include "pch.h"
-#include <Windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iostream>
-#include <Psapi.h>
-#include <vector>
-#include <string>
-#include <memory>
-#include <algorithm>
-#include "vendor/Detour/detours.h"
-
-#if defined(_X86_)
-#pragma comment(lib, "vendor/Detour/detours.x86.lib")
-#elif defined(_AMD64_)
-#pragma comment(lib, "vendor/Detour/detours.x64.lib")
-#endif
+#include "dllmain.h"
+#include "memory.h"
 
 typedef int (WSAAPI *send_t)(SOCKET s, const char *buf, int len, int flags);
 typedef struct hostent* (WSAAPI *gethostbyname_t)(const char *name);

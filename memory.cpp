@@ -1,3 +1,12 @@
+/*
+Copyright (c) Anthony Beaumont
+This source code is licensed under the MIT License
+found in the LICENSE file in the root directory of this source tree.
+*/
+
+#include "pch.h"
+#include "memory.h"
+
 bool ReadMemory(HANDLE processHandle, LPCVOID baseAddress, SIZE_T size, std::vector<BYTE>& buffer) {
     buffer.resize(size);
     SIZE_T bytesRead;
