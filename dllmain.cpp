@@ -5,22 +5,8 @@ found in the LICENSE file in the root directory of this source tree.
 */
 
 #include "pch.h"
-#include <Windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iostream>
-#include <Psapi.h>
-#include <vector>
-#include <string>
-#include <memory>
-#include <algorithm>
-#include "detours.h"
-
-#if defined(_X86_)
-#pragma comment(lib, "detours.x86.lib")
-#elif defined(_AMD64_)
-#pragma comment(lib, "detours.x64.lib")
-#endif
+#include "dllmain.h"
+#include "memory.h"
 
 typedef int (WSAAPI *send_t)(SOCKET s, const char *buf, int len, int flags);
 typedef struct hostent* (WSAAPI *gethostbyname_t)(const char *name);
@@ -195,45 +181,7 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
     return pGetHostByName(host.c_str());
 }
 
-bool ReadMemory(HANDLE processHandle, LPCVOID baseAddress, SIZE_T size, std::vector<BYTE>& buffer) {
-    buffer.resize(size);
-    SIZE_T bytesRead;
-    return ReadProcessMemory(processHandle, baseAddress, buffer.data(), size, &bytesRead) && bytesRead == size;
-}
 
-bool FindBytesInMemory(const std::vector<BYTE>& memory, const std::vector<BYTE>& pattern, SIZE_T& foundOffset) {
-    auto it = std::search(memory.begin(), memory.end(), pattern.begin(), pattern.end());
-
-    if (it != memory.end()) {
-        foundOffset = std::distance(memory.begin(), it);
-        return true;
-    }
-    return false;
-}
-
-bool WriteBytesToMemory(HANDLE processHandle, LPVOID baseAddress, const std::vector<BYTE>& newPattern, SIZE_T offset) {
-    // Calculate the target address
-    BYTE* targetAddress = (BYTE*)baseAddress + offset;
-
-    // Change the protection of the memory region
-    DWORD oldProtect;
-    SIZE_T size = newPattern.size();
-    if (!VirtualProtectEx(processHandle, targetAddress, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
-        std::cerr << "Failed to change memory protection." << std::endl;
-        return false;
-    }
-
-    // Write to the memory
-    bool writeSuccess = WriteProcessMemory(processHandle, targetAddress, newPattern.data(), newPattern.size(), NULL);
-
-    // Restore the old protection
-    if (!VirtualProtectEx(processHandle, targetAddress, size, oldProtect, &oldProtect)) {
-        std::cerr << "Failed to restore memory protection." << std::endl;
-        return false;
-    }
-
-    return writeSuccess;
-}
 
 bool ModifyPublicKey() {
 
