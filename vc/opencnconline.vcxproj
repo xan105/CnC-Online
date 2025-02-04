@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\dllmain.h" />
     <ClInclude Include="..\src\memory.h" />
+    <ClInclude Include="..\src\util.h" />
     <ClInclude Include="..\src\version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp" />
     <ClCompile Include="..\src\memory.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

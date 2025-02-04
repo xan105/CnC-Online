@@ -26,7 +26,8 @@ HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpF
 int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags);
 struct hostent* WSAAPI detourGetHostByName(const char *name);
 bool ModifyPublicKey();
-void enableConsole();
-bool setDetours();
+bool takeDetour(PVOID* ppPointer, PVOID pDetour);
+bool setDetoursForSocket();
+bool setDetoursForShell();
 DWORD WINAPI Main(LPVOID lpReserved);
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved);

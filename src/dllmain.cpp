@@ -6,10 +6,7 @@ found in the LICENSE file in the root directory of this source tree.
 
 #include "dllmain.h"
 #include "memory.h"
-
-typedef int (WSAAPI *send_t)(SOCKET s, const char *buf, int len, int flags);
-typedef struct hostent* (WSAAPI *gethostbyname_t)(const char *name);
-typedef HINSTANCE(WINAPI* ShellExecuteW_t)(HWND, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR, INT);
+#include "util.h"
 
 send_t pSend = nullptr;
 gethostbyname_t pGetHostByName = nullptr;
@@ -53,10 +50,10 @@ std::vector<BYTE> cncOnlinePublicKey = {
     0x0D, 0x07, 0xE5, 0xAD, 0x93, 0x0D, 0x2D, 0xF5
 };
 
-HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpFile, LPCWSTR lpParameters, LPCWSTR lpDirectory, INT nShowCmd)
-{
+HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpFile, LPCWSTR lpParameters, LPCWSTR lpDirectory, INT nShowCmd) {
+    std::cout << "ShellExecuteW()" << std::endl;
+    
     std::wstring file(lpFile);
-
     if (wcscmp(lpOperation, L"open") == 0) {
         if (file == L"http://profile.ea.com/") { //RA3 Register Account button
             file = L"https://cnc-online.net/en/connect/register/";
@@ -69,10 +66,10 @@ HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpF
     return pShellExecuteW(hwnd, lpOperation, file.c_str(), lpParameters, lpDirectory, nShowCmd);
 }
 
-
 int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
-    std::string str(buf, len);
+    std::cout << "Send()" << std::endl;
 
+    std::string str(buf, len);
     if (str.find("GET ") == 0 || str.find("HEAD ") == 0) {
 
         std::string updatedStr = str;
@@ -98,8 +95,9 @@ int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
 }
 
 struct hostent* WSAAPI detourGetHostByName(const char *name) {
+    std::cout << "GetHostByName()" << std::endl;
+
     std::string host(name);
-    
     if (host == "servserv.generals.ea.com" || 
         host == "na.llnet.eadownloads.ea.com") 
     {
@@ -180,8 +178,6 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
     return pGetHostByName(host.c_str());
 }
 
-
-
 bool ModifyPublicKey() {
 
     MODULEINFO moduleInfo;
@@ -200,87 +196,53 @@ bool ModifyPublicKey() {
 
             if (WriteBytesToMemory(processHandle, moduleInfo.lpBaseOfDll, cncOnlinePublicKey, foundOffset)) {
                 std::cout << "Successfully wrote new pattern to memory." << std::endl;
-                return TRUE;
+                return true;
             }
             else {
                 std::cerr << "Failed to write new pattern to memory." << std::endl;
-                return FALSE;
+                return false;
             }
         }
         else {
             std::cout << "Public key not found." << std::endl;
-            return FALSE;
+            return false;
         }
     }
     else {
         std::cerr << "Failed to read process memory." << std::endl;
-        return FALSE;
+        return false;
     }
 }
 
-
-void enableConsole() {
-
-    if (AllocConsole()) {
-        HWND consoleWindow = GetConsoleWindow();
-
-        if (consoleWindow) {
-            // Set the console window to be layered
-            LONG style = GetWindowLong(consoleWindow, GWL_EXSTYLE);
-            SetWindowLong(consoleWindow, GWL_EXSTYLE, style | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(consoleWindow, 0, 225, LWA_COLORKEY);
-            
-            // Show the console window
-            ShowWindow(consoleWindow, SW_SHOW);
-        }
-
-        // Redirect stdio to the console
-        FILE* dummy;
-        freopen_s(&dummy, "CONOUT$", "w", stdout);
-        freopen_s(&dummy, "CONIN$", "r", stdin);
-        freopen_s(&dummy, "CONOUT$", "w", stderr);
-    }
-}
-
-bool setDetours() {
- 
-    // Load the ws2_32.dll module
-    static HMODULE ws2_32 = nullptr;
-    ws2_32 = LoadLibrary(L"ws2_32.dll");
-    if (ws2_32 == nullptr) {
-        std::cerr << "Failed to load ws2_32.dll!" << std::endl;
-        return FALSE;
-    }
-    // Get addresses of the functions to be hooked
-    pSend = (send_t)GetProcAddress(ws2_32, "send");
-    pGetHostByName = (gethostbyname_t)GetProcAddress(ws2_32, "gethostbyname");
-
-    // Load the shell32.dll module
-    static HMODULE shell32 = nullptr;
-    shell32 = LoadLibrary(L"shell32.dll");
-    if (shell32 == nullptr) {
-        std::cerr << "Failed to load Shell32.dll!" << std::endl;
-        return FALSE;
-    }
-    // Get addresses of the functions to be hooked
-    pShellExecuteW = (ShellExecuteW_t)GetProcAddress(shell32, "ShellExecuteW");
-
-    if (pSend == nullptr || pGetHostByName == nullptr || pShellExecuteW == nullptr) {
-        std::cerr << "Failed to get function addresses!" << std::endl;
-        return FALSE;
-    }
-
-    // Attach hooks
+bool takeDetour(PVOID* ppPointer, PVOID pDetour) {
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
-    DetourAttach(&(PVOID&)pSend, detourSend);
-    DetourAttach(&(PVOID&)pGetHostByName, detourGetHostByName);
-    DetourAttach(&(PVOID&)pShellExecuteW, detourShellExecuteW);
+    DetourAttach(ppPointer, pDetour);
+    return DetourTransactionCommit() == NO_ERROR;
+}
 
-    if (DetourTransactionCommit() != NO_ERROR) {
-        std::cerr << "Failed to attach hooks!" << std::endl;
-        return FALSE;
-    }
+bool setDetoursForSocket() {
+    HMODULE hMod = LoadLibraryA("ws2_32.dll");
+    if (hMod == nullptr) return false;
+
+    pSend = (send_t)GetProcAddress(hMod, "send");
+    if (pSend == nullptr) return false;
+    if (!takeDetour(&(PVOID&)pSend, detourSend)) return false;
+    
+    pGetHostByName = (gethostbyname_t)GetProcAddress(hMod, "gethostbyname");
+    if (pGetHostByName == nullptr) return false;
+    if (!takeDetour(&(PVOID&)pGetHostByName, detourGetHostByName)) return false;
+
+    return true;
+}
+
+bool setDetoursForShell() {
+    HMODULE hMod = LoadLibraryA("shell32.dll");
+    if (hMod == nullptr) return false;
+
+    pShellExecuteW = (ShellExecuteW_t)GetProcAddress(hMod, "ShellExecuteW");
+    if (pShellExecuteW == nullptr) return false;
+    if (!takeDetour(&(PVOID&)pShellExecuteW, detourShellExecuteW)) return false;
 
     return true;
 }
@@ -293,11 +255,9 @@ DWORD WINAPI Main(LPVOID lpReserved) {
 
     std::cout << "pid: " << GetCurrentProcessId() << std::endl;
 
-    if (setDetours()) {
+    if (setDetoursForSocket() && 
+        setDetoursForShell()) { 
         std::cout << "Detour function set." << std::endl;
-    }
-    else {
-        std::cerr << "Failed set detour function." << std::endl;
     }
 
     if (ModifyPublicKey()) {
