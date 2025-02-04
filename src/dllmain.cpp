@@ -4,7 +4,6 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-#include "pch.h"
 #include "dllmain.h"
 #include "memory.h"
 
@@ -308,7 +307,7 @@ DWORD WINAPI Main(LPVOID lpReserved) {
         std::cerr << "Failed to modify public key." << std::endl;
     }
 
-    return true;
+    return 0;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {

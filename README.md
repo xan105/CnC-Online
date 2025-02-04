@@ -53,3 +53,14 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
 |UDP/13139|RA3 Custom UDP Pings|
 |UDP/27900|RA3 Master Server UDP Heartbeat|
 |UDP/16000|Backend Server|
+
+Build
+=====
+
+🆚 **Visual Studio 2022**
+
+📦 Vendor dependencies:
+  - [Microsoft Detours library](https://github.com/microsoft/Detours)
+
+Solution: `./vc/opencnconline.sln`
+Output: `./build/output/${platform}/${config}`
