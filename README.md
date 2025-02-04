@@ -62,5 +62,5 @@ Build
 📦 Vendor dependencies:
   - [Microsoft Detours library](https://github.com/microsoft/Detours)
 
-Solution: `./vc/opencnconline.sln`
+Solution: `./vc/opencnconline.sln`<br />
 Output: `./build/output/${platform}/${config}`
