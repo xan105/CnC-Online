@@ -258,6 +258,8 @@ DWORD WINAPI Main(LPVOID lpReserved) {
     if (setDetoursForSocket() && 
         setDetoursForShell()) { 
         std::cout << "Detour function set." << std::endl;
+    } else {
+        std::cerr << "Failed to set detour function." << std::endl;
     }
 
     if (ModifyPublicKey()) {
