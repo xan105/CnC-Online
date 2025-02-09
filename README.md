@@ -48,7 +48,7 @@ Upon injection into the game process, the patch DLL performs the following actio
 _"Launchers inception"_ (Launcher that starts another Launcher) is despised by many but it remains a matter of personal preference. 
 For me the core issue was that their launcher **did not work** with the Steam version nor with Linux/Proton when I tried it.
 
-And I'm absolutely not a fan of registering their launcher as a debugger in the registry for specific executables (what they called "hook" mode in their launcher).
+And I'm absolutely not a fan of registering their launcher as a debugger in the registry for specific executables (what they call "hook" mode in their launcher).
 
 I aimed to restore the online features of *Red Alert 3* without relying on their launcher and make the solution compatible with Linux/Proton.
 
@@ -61,7 +61,7 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
 
 ### Registry
   
-  Please be advice that these games check the values in the registry: incorrect or missing value(s) may prompt an "offline" error when entering "Online play" in the menu even tho your network and the server are fine (not to be confused with actual netowrk error).
+  Please be advice that these games check the values in the registry: incorrect or missing value(s) may prompt an "offline" error when entering "Online play" in the menu even tho your network and the server are fine (not to be confused with actual network error).
 
 ### NAT
 
