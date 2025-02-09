@@ -52,18 +52,32 @@ std::vector<BYTE> cncOnlinePublicKey = {
 
 HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpFile, LPCWSTR lpParameters, LPCWSTR lpDirectory, INT nShowCmd) {
     std::cout << "ShellExecuteW()" << std::endl;
-    
-    std::wstring file(lpFile);
-    if (wcscmp(lpOperation, L"open") == 0) {
-        if (file == L"http://profile.ea.com/") { //RA3 Register Account button
-            file = L"https://cnc-online.net/en/connect/register/";
+    std::wcout << L"\tOperation: " << lpOperation << std::endl;
+    std::wcout << L"\tFile: " << lpFile << std::endl;
+    std::wcout << L"\tParameters: " << lpParameters << std::endl;
+
+    if (lpOperation && wcscmp(lpOperation, L"open") == 0) {
+        std::wstring file(lpFile);
+        if (file == L"IEXPLORE.EXE") {                                                              //Kane's Wrath
+            std::wstring param(lpParameters);
+            if (param == L"http://www.ea.com/global/legal/tos.jsp") {
+                file = L"https://cnc-online.net/en/faq/";
+            }
+            else if (param == L"http://www.commandandconquer.com") {
+                file = L"https://cnc-online.net/en";
+            }
         }
-        else if (file.find(L"http://www.ea.com/redalert/") == 0 ) { //RA3 CnC Website button
+        else if (file == L"http://profile.ea.com/" ||                                               //RA3
+           (file.size() >= 8 && _wcsicmp(file.c_str() + file.size() - 8, L"EREG.EXE") == 0)) {      //Kane's Wrath
+           file = L"https://cnc-online.net/en/connect/register/";
+        }
+        else if (file.find(L"http://www.ea.com/redalert/") == 0 ) {                                 //RA3
             file = L"https://cnc-online.net/en";
         }
+        return pShellExecuteW(hwnd, lpOperation, file.c_str(), NULL, lpDirectory, nShowCmd);
     }
 
-    return pShellExecuteW(hwnd, lpOperation, file.c_str(), lpParameters, lpDirectory, nShowCmd);
+    return pShellExecuteW(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd);
 }
 
 int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
