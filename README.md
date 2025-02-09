@@ -6,16 +6,36 @@
 
 This project provides a patch through DLL injection to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process.
 
-This patch is designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
+I'm open sourcing this solution to share the knowledge and hopefully helping others to build alternative solution to restore online play for these classic games.
+
+This patch is designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher) first and foremost, but it can also be used with any DLL injection tool of your choice.
 
 > [!NOTE]
-> Although this patch should technically be compatible with the other supported games, testing has been limited to *Red Alert 3*, which is the primary focus of this project.
+> This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by Revora/CnC-Online.
+
+## Usage
+
+You need a DLL injector, I'm sure a quick google search will find you plenty on GitHub.<br />
+🐧 Linux: the classic method of using `createRemoteThread()` + `LoadLibrary()` from `Kernel32` works under Wine/Proton.
+
+You need to inject the DLL into the game process and **not** the launcher.
+
+Example:
+
+- Red Alert 3: 
+    + Exec = `RA3.exe` ❌ -> `Data\ra3_1.12.game` ✔️
+    + Args = `-config "%GAMEDIR%\RA3_english_1.12.SkuDef"`
+- C&C3 Kane's Wrath: 
+    + Exec = `CNC3EP1.exe` ❌ -> `RetailExe\1.2\cnc3ep1.dat` ✔️
+    + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.2.SkuDef"`
+- Zero Hour: 
+    + Exec = `Generals.exe` ❌ -> `game.dat` ✔️
 
 ## How does it work ?
 
 Upon injection into the game process, the patch DLL performs the following actions:
 
-- Find and replace the original EA public key with the CnC-Online key.
+- Find and replace the original EA public key with the CnC-Online key (if any).
 - Hook _ws2_32_ (winsock2) `send()` and `gethostbyname()` Win32 API calls to redirect them to the CnC Online GameSpy server emulation service.
 
 <p align="center">
@@ -25,34 +45,52 @@ Upon injection into the game process, the patch DLL performs the following actio
 
 ## Why not use the official CnC-Online launcher ?
 
-While _"Launchers inception"_ (Launcher which starts another Launcher) is despised by many it remains a matter of personal preference. 
-But for me the core issue was that their launcher didn't work with the Steam version nor with Linux/Proton when I tried it.
+_"Launchers inception"_ (Launcher that starts another Launcher) is despised by many but it remains a matter of personal preference. 
+For me the core issue was that their launcher **did not work** with the Steam version nor with Linux/Proton when I tried it.
 
-I aimed to restore the online features of *Red Alert 3* without relying on their launcher. Given how straightforward it was to re-enable these features in the client, it feels criminal to not open source this solution and share the knowledge.
+And I'm absolutely not a fan of registering their launcher as a debugger in the registry for specific executables (what they called "hook" mode in their launcher).
+
+I aimed to restore the online features of *Red Alert 3* without relying on their launcher and make the solution compatible with Linux/Proton.
 
 <p align="center">
   <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/linux_proton.png">
   <em>Connected to C&C:Online under 🐧 Linux/Proton 9.0-2 (Fedora)</em>
 </p>
 
-## Reminder
+## Reminder for Online Play
 
-> [!TIP]
-> Please be reminded that *Red Alert 3* still requires a bunch of ports to be opened to play online:
+### Registry
+  
+  Please be advice that these games check the values in the registry: incorrect or missing value(s) may prompt an "offline" error when entering "Online play" in the menu even tho your network and the server are fine (not to be confused with actual netowrk error).
 
-|PORT|DESCRIPTION|
-|----|-----------|
-|TCP/3783|RA3 Voice Chat Port|
-|TCP/4321|RA3 Mangler Servers|
-|TCP/28900|RA3 Master Server List Request|
-|TCP/29900|GP Connection Manager|
-|TCP/29901|GP Search Manager|
-|TCP/16000|Backend Server|
-|UDP/6500|RA3 Query Port|
-|UDP/6515|RA3 Dplay UDP|
-|UDP/13139|RA3 Custom UDP Pings|
-|UDP/27900|RA3 Master Server UDP Heartbeat|
-|UDP/16000|Backend Server|
+### NAT
+
+  These games use IPv4 only and are P2P meaning you most likely need port forwarding to play online.
+  If you are playing with your mates consider using a VPN (hamachi, radmin, ...) even for online play as a work-around.
+  
+  <details>
+  <summary>Red Alert 3 ports:</summary>
+
+  |PORT|DESCRIPTION|
+  |----|-----------|
+  |TCP/3783|RA3 Voice Chat Port|
+  |TCP/4321|RA3 Mangler Servers|
+  |TCP/28900|RA3 Master Server List Request|
+  |TCP/29900|GP Connection Manager|
+  |TCP/29901|GP Search Manager|
+  |TCP/16000|Backend Server|
+  |UDP/6500|RA3 Query Port|
+  |UDP/6515|RA3 Dplay UDP|
+  |UDP/13139|RA3 Custom UDP Pings|
+  |UDP/27900|RA3 Master Server UDP Heartbeat|
+  |UDP/16000|Backend Server|
+
+  </details>
+
+### Network interface
+
+  Being P2P these games generally have an option in their settings menu to choose which IP/Network adapter to use.
+  Usually the default is fine and correct but sometimes it isn't.
 
 Build
 =====
