@@ -4,7 +4,9 @@
 
 ## Description
 
-This project provides a patch through DLL injection or DLL sideloading to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process.
+This project provides a patch through DLL injection or DLL sideloading to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process. 
+
+🐧 Running Linux ? This patch is compatible with Linux/Proton.
 
 > [!NOTE]
 > This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by [Revora/CnC-Online](https://cnc-online.net/en/).
@@ -25,6 +27,9 @@ Example:
 - C&C3 Kane's Wrath: 
     + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
     + DLL = `\RetailExe\1.2\winmm.dll`
+- C&C3 Tiberium Wars: 
+    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.9\cnc3game.dat` ✔️
+    + DLL = `\RetailExe\1.9\winmm.dll`    
 - Zero Hour: 
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔
     + DLL = `\winmm.dll`
@@ -37,7 +42,7 @@ Then launch the game as you would normally do.
 This patch was originally designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
 
 A quick google search will find you plenty on GitHub.<br />
-🐧 Linux: the classic method of using `createRemoteThread()` + `LoadLibrary()` from `Kernel32` works under Wine/Proton.
+🐧 Linux: the classic combo `createRemoteThread()` + `LoadLibrary()` from `Kernel32` works under Wine/Proton.
 
 You need to inject the DLL into the game process and **not** the launcher.
 
@@ -49,6 +54,9 @@ Example:
 - C&C3 Kane's Wrath: 
     + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
     + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.2.SkuDef"`
+- C&C3 Tiberium Wars: 
+    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.9\cnc3game.dat` ✔️
+    + DLL = `-config "%GAMEDIR%\CNC3_english_1.9.SkuDef"`
 - Zero Hour: 
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔️
 
