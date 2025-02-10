@@ -4,18 +4,39 @@
 
 ## Description
 
-This project provides a patch through DLL injection to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process.
-
-I'm open sourcing this solution to share the knowledge and hopefully helping others to build alternative solution to restore online play for these classic games.
-
-This patch is designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher) first and foremost, but it can also be used with any DLL injection tool of your choice.
+This project provides a patch through DLL injection or DLL sideloading to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process.
 
 > [!NOTE]
-> This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by Revora/CnC-Online.
+> This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by [Revora/CnC-Online](https://cnc-online.net/en/).
 
 ## Usage
 
-You need a DLL injector, I'm sure a quick google search will find you plenty on GitHub.<br />
+### A) DLL Sideloading (easy)
+
+This patch DLL can act as a proxy to `winmm.dll` located in `C:\Windows\System32\`.
+
+Rename `opencnconline.dll` to `winmm.dll` and copy it next to the game's executable (**not** the game's launcher).
+
+Example:
+
+- Red Alert 3: 
+    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.12.game` ✔️
+    + DLL = `\Data\winmm.dll`
+- C&C3 Kane's Wrath: 
+    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
+    + DLL = `\RetailExe\1.2\winmm.dll`
+- Zero Hour: 
+    + Exec = `Generals.exe` ❌ -> `\game.dat` ✔
+    + DLL = `\winmm.dll`
+
+🐧 Linux/Proton: add `WINEDLLOVERRIDES="winmm=n,b" %command%` to the launch options.<br />
+Then launch the game as you would normally do.
+
+### A) DLL Injection (advanced)
+
+This patch was originally designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
+
+A quick google search will find you plenty on GitHub.<br />
 🐧 Linux: the classic method of using `createRemoteThread()` + `LoadLibrary()` from `Kernel32` works under Wine/Proton.
 
 You need to inject the DLL into the game process and **not** the launcher.
@@ -23,13 +44,13 @@ You need to inject the DLL into the game process and **not** the launcher.
 Example:
 
 - Red Alert 3: 
-    + Exec = `RA3.exe` ❌ -> `Data\ra3_1.12.game` ✔️
+    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.12.game` ✔️
     + Args = `-config "%GAMEDIR%\RA3_english_1.12.SkuDef"`
 - C&C3 Kane's Wrath: 
-    + Exec = `CNC3EP1.exe` ❌ -> `RetailExe\1.2\cnc3ep1.dat` ✔️
+    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
     + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.2.SkuDef"`
 - Zero Hour: 
-    + Exec = `Generals.exe` ❌ -> `game.dat` ✔️
+    + Exec = `Generals.exe` ❌ -> `\game.dat` ✔️
 
 ## How does it work ?
 
