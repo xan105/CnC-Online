@@ -34,10 +34,10 @@ Example:
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔
     + DLL = `\winmm.dll`
 
-🐧 Linux/Proton: add `WINEDLLOVERRIDES="winmm=n,b" %command%` to the launch options.<br />
+🐧 Linux/Proton: Open up the game properties in Steam and add `WINEDLLOVERRIDES="winmm=n,b" %command%` to the launch options.<br />
 Then launch the game as you would normally do.
 
-### A) DLL Injection (advanced)
+### B) DLL Injection (advanced)
 
 This patch was originally designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
 
