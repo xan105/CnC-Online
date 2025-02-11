@@ -34,8 +34,7 @@ Example:
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔
     + DLL = `\winmm.dll`
 
-🐧 Linux/Proton: Open up the game properties in Steam and add `WINEDLLOVERRIDES="winmm=n,b" %command%` to the launch options.<br />
-Then launch the game as you would normally do.
+🐧 Linux/Proton: Open up the game properties in Steam and add `WINEDLLOVERRIDES="winmm=n,b" %command%` to the launch options. Then launch the game as you would normally do.
 
 ### B) DLL Injection (advanced)
 
@@ -56,7 +55,7 @@ Example:
     + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.2.SkuDef"`
 - C&C3 Tiberium Wars: 
     + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.9\cnc3game.dat` ✔️
-    + DLL = `-config "%GAMEDIR%\CNC3_english_1.9.SkuDef"`
+    + Args = `-config "%GAMEDIR%\CNC3_english_1.9.SkuDef"`
 - Zero Hour: 
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔️
 
