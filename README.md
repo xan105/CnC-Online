@@ -22,14 +22,14 @@ Rename `opencnconline.dll` to `winmm.dll` and copy it next to the game's executa
 Example:
 
 - Red Alert 3: 
-    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.12.game` ✔️
+    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.13.game` ✔️
     + DLL = `\Data\winmm.dll`
 - C&C3 Kane's Wrath: 
-    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
-    + DLL = `\RetailExe\1.2\winmm.dll`
+    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.3\cnc3ep1.dat` ✔️
+    + DLL = `\RetailExe\1.3\winmm.dll`
 - C&C3 Tiberium Wars: 
-    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.9\cnc3game.dat` ✔️
-    + DLL = `\RetailExe\1.9\winmm.dll`    
+    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.10\cnc3game.dat` ✔️
+    + DLL = `\RetailExe\1.10\winmm.dll`    
 - Zero Hour: 
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔
     + DLL = `\winmm.dll`
@@ -48,14 +48,14 @@ You need to inject the DLL into the game process and **not** the launcher.
 Example:
 
 - Red Alert 3: 
-    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.12.game` ✔️
-    + Args = `-config "%GAMEDIR%\RA3_english_1.12.SkuDef"`
+    + Exec = `RA3.exe` ❌ -> `\Data\ra3_1.13.game` ✔️
+    + Args = `-config "%GAMEDIR%\RA3_english_1.13.SkuDef"`
 - C&C3 Kane's Wrath: 
-    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.2\cnc3ep1.dat` ✔️
-    + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.2.SkuDef"`
+    + Exec = `CNC3EP1.exe` ❌ -> `\RetailExe\1.3\cnc3ep1.dat` ✔️
+    + Args = `-config "%GAMEDIR%\CNC3EP1_english_1.3.SkuDef"`
 - C&C3 Tiberium Wars: 
-    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.9\cnc3game.dat` ✔️
-    + Args = `-config "%GAMEDIR%\CNC3_english_1.9.SkuDef"`
+    + Exec = `CNC3.exe` ❌ -> `\RetailExe\1.10\cnc3game.dat` ✔️
+    + Args = `-config "%GAMEDIR%\CNC3_english_1.10.SkuDef"`
 - Zero Hour: 
     + Exec = `Generals.exe` ❌ -> `\game.dat` ✔️
 
