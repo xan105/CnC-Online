@@ -27,6 +27,12 @@
     <ClInclude Include="..\src\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\patch\RA3\patcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\patch\RA3\wall_crash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\opencnconline.rc">
@@ -41,6 +47,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\patch\RA3\patcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\patch\RA3\wall_crash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

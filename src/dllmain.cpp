@@ -7,6 +7,7 @@ found in the LICENSE file in the root directory of this source tree.
 #include "dllmain.h"
 #include "memory.h"
 #include "util.h"
+#include "patch/RA3/patcher.h"
 
 connect_t pConnect = nullptr;
 send_t pSend = nullptr;
@@ -312,6 +313,8 @@ DWORD WINAPI Main(LPVOID lpReserved) {
     else {
         std::cerr << "Failed to modify public key." << std::endl;
     }
+    
+    ApplyRA3Patches();
 
     return 0;
 }
