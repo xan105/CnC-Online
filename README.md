@@ -64,8 +64,8 @@ Example:
 Upon injection into the game process, the patch DLL performs the following actions:
 
 - Find and replace the original EA public key with the CnC-Online key (if any).
-- Hook [send(https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send)] and [gethostbyname(https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-gethostbyname)] calls to redirect them to the CnC Online GameSpy server emulation service.
-- Hook [connect(https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect)] to switch to an alternative peerchat port (16667) in case port `6667` is blocked. Some countries do block this port because it is also used by IRC.
+- Hook [send()](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send) and [gethostbyname()](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-gethostbyname) calls to redirect them to the CnC Online GameSpy server emulation service.
+- Hook [connect()](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect) to switch to an alternative peerchat port in case port `6667` is blocked.<br /> Some countries do block this port because it is also used by IRC.
 
 <p align="center">
   <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/welcome_back_commander.png">
