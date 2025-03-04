@@ -8,6 +8,7 @@ found in the LICENSE file in the root directory of this source tree.
 #include "memory.h"
 #include "util.h"
 
+connect_t pConnect = nullptr;
 send_t pSend = nullptr;
 gethostbyname_t pGetHostByName = nullptr;
 ShellExecuteW_t pShellExecuteW = nullptr;
@@ -76,6 +77,33 @@ HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpF
     }
 
     return pShellExecuteW(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd);
+}
+
+std::atomic<bool> useAltPeerChatPort(false);
+int WSAAPI detourConnect(SOCKET s, const sockaddr* name, int namelen) { 
+  std::cout << "Connect()" << std::endl;
+  
+  sockaddr_in* addr_in = (sockaddr_in*)name;
+    if (addr_in->sin_family == AF_INET) { //IPv4
+        int port = ntohs(addr_in->sin_port);
+        if (port == 6667) {
+            if (useAltPeerChatPort) {
+                std::cout << "Using alt peer chat port" << std::endl;
+                addr_in->sin_port = htons(16667);
+            } else {
+                int result = pConnect(s, name, namelen);
+                if (result == SOCKET_ERROR) {
+                    std::cout << "Switching to alt peer chat port" << std::endl;
+                    useAltPeerChatPort = true;
+                    addr_in->sin_port = htons(16667);
+                    result = pConnect(s, name, namelen);
+                }
+                return result;
+            }
+        }
+    }
+
+    return pConnect(s, name, namelen);
 }
 
 int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
@@ -186,7 +214,7 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
     {
         host = "server.cnc-online.net";
     }
-
+    
     return pGetHostByName(host.c_str());
 }
 
@@ -240,6 +268,10 @@ bool setDetoursForSocket() {
     pSend = (send_t)GetProcAddress(hMod, "send");
     if (pSend == nullptr) return false;
     if (!takeDetour(&(PVOID&)pSend, detourSend)) return false;
+
+    pConnect = (connect_t)GetProcAddress(hMod, "connect");
+    if (pConnect == nullptr) return false;
+    if (!takeDetour(&(PVOID&)pConnect, detourConnect)) return false;
     
     pGetHostByName = (gethostbyname_t)GetProcAddress(hMod, "gethostbyname");
     if (pGetHostByName == nullptr) return false;
