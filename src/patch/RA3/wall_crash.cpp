@@ -4,7 +4,7 @@ All credits to lanyizi
 */
 extern "C" {
 
-    __declspec(naked) void WallCrash_patch0()
+    __declspec(naked) void WallCrash_patch_retail()
     {
         //  mov     ecx, [edx + 374h]
         //  mov     edx, [esi + 374h]
@@ -29,23 +29,23 @@ extern "C" {
 
             // Now we are sure it won't crash.
             // Go back to game code which loads [edx + 144h] and [ecx + 144h]
-            // 0x54EA8E is Steam version address.
-            // Origin version address: 0x59004E
+            // Retail version address: 0x54EA8E
+            // Digital version address: 0x59004E
             push    0x54EA8E; // go back to game code
             ret;
         failure:
             // We think the game is going crash
             // We jump away to prevent executing the crashing code.
-            // 0x54EB32 is Steam version address.
-            // Origin version address: 0x5900F2
+            // Retail version address: 0x54EB32
+            // Digital version address: 0x5900F2
             push    0x54EB32; // jump away
             ret;
         }
     }
 
-    __declspec(naked) void WallCrash_patch0b()
+    __declspec(naked) void WallCrash_patch_digital()
     {
-        // Fix crash for Origin version at 0x590048
+        // Fix crash for Digital version at 0x590048
 
         //  mov     ecx, [edx + 374h]
         //  mov     edx, [esi + 374h]
@@ -70,24 +70,24 @@ extern "C" {
 
             // Now we are sure it won't crash.
             // Go back to game code which loads [edx + 144h] and [ecx + 144h]
-            // 0x59004E is Origin version address.
-            // Steam version address: 0x54EA8E
+            // Retail version address: 0x54EA8E
+            // Digital version address: 0x59004E
             push    0x59004E; // go back to game code
             ret;
         failure:
             // We think the game is going crash
             // We jump away to prevent executing the crashing code.
-            // 0x5900F2 is Origin version address.
-            // Steam version address: 0x54EB32
+            // Retail version address: 0x54EB32
+            // Digital version address: 0x5900F2
             push    0x5900F2; // jump away
             ret;
         }
     }
 
-    __declspec(naked) void WallCrash_patch1()
+    __declspec(naked) void WallCrash_patch_common()
     {
-        // Steam Address: 0x81D1F6
-        // Origin Address: 0x85B386
+        // Retail Address: 0x81D1F6
+        // Digital Address: 0x85B386
         __asm
         {
             mov     ecx, dword ptr[ebx + 0x374];

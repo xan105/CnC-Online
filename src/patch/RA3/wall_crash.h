@@ -7,7 +7,7 @@ All credits to lanyizi
 #include <Windows.h>
 
 extern "C" {
-	void WallCrash_patch0();
-	void WallCrash_patch0b();
-	void WallCrash_patch1();
+	void WallCrash_patch_retail();
+	void WallCrash_patch_digital();
+	void WallCrash_patch_common();
 }

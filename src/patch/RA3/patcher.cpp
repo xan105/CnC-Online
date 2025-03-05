@@ -10,19 +10,21 @@ All credits to lanyizi
 #include "patcher.h"
 #include "../../memory.h"
 
-const std::unordered_map<uintptr_t, GameRelease> VERSIONS = {
-    std::make_pair((uintptr_t)0xC5B6C4, STEAM),
-    std::make_pair((uintptr_t)0xC6262C, ORIGIN),
+const GameVersionMap VERSIONS = {
+  {"1.12", {
+    {RETAIL, 0xC5B6C4},
+    {DIGITAL, 0xC6262C}
+  }},
+  {"1.13", {
+    {DIGITAL, 0x000000}, //TODO: 1.13 Memory address have changed
+  }}
 };
 
-GameRelease GetReleaseVersion() {
-    for (const auto& pair : VERSIONS) {
-        uintptr_t address = pair.first;
-        GameRelease version = pair.second;
-
+GameRelease GetReleaseVersion(std::string version) {
+    for (const auto& [release, address] : VERSIONS.at(version)) {
         const char* ptr = reinterpret_cast<const char*>(address);
         if (ptr && std::string(ptr, 8) == "RedAlert") {
-            return version;
+          return release;
         }
     }
     return static_cast<GameRelease>(UNKNOWN);
@@ -60,21 +62,21 @@ void ApplyRA3Patches() {
         size_t lastSlash = executablePath.find_last_of(L"\\");
         std::wstring executableName = (lastSlash != std::wstring::npos) ? executablePath.substr(lastSlash + 1) : executablePath;
         
-        if (executableName == L"ra3_1.12.game") { //TODO: 1.13 Memory address have changed
+        if (executableName == L"ra3_1.12.game") { 
             std::cout << "Red Alert 3 (v1.12): ";
-            switch (GetReleaseVersion()) {
-                case STEAM: {
-                    std::cout << "Steam Release" << std::endl;
-                    if (PatchInstruction(hProcess, 0x54EA88, &WallCrash_patch0) &&
-                        PatchInstruction(hProcess, 0x81D1F6, &WallCrash_patch1)) {
+            switch (GetReleaseVersion("1.12")) {
+                case RETAIL: {
+                    std::cout << "Retail Release (SecuROM DVD / Steam)" << std::endl;
+                    if (PatchInstruction(hProcess, 0x54EA88, &WallCrash_patch_retail) &&
+                        PatchInstruction(hProcess, 0x81D1F6, &WallCrash_patch_common)) {
                       std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
                     }
                     break;
                 }
-                case ORIGIN: {
-                    std::cout << "EA/Origin Release" << std::endl;
-                    if (PatchInstruction(hProcess, 0x590048, &WallCrash_patch0b) &&
-                        PatchInstruction(hProcess, 0x85B386, &WallCrash_patch1)) {
+                case DIGITAL: {
+                    std::cout << "Digital Release (EA/Origin, Steam)" << std::endl;
+                    if (PatchInstruction(hProcess, 0x590048, &WallCrash_patch_digital) &&
+                        PatchInstruction(hProcess, 0x85B386, &WallCrash_patch_common)) {
                       std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
                     }
                     break;

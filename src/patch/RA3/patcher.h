@@ -18,11 +18,13 @@ All credits to lanyizi
 
 enum GameRelease {
     UNKNOWN,
-    STEAM,
-    ORIGIN,
-    RETAIL
+    RETAIL,   //SecuROM (DVD and legacy Steam version)
+    DIGITAL,  //Online store (EA/Origin and Steam version)
 };
 
-GameRelease GetReleaseVersion();
+using AddressMap = std::unordered_map<GameRelease, uintptr_t>;
+using GameVersionMap = std::unordered_map<std::string, AddressMap>;
+
+GameRelease GetReleaseVersion(std::string version);
 bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* code);
 void ApplyRA3Patches();
