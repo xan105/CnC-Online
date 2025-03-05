@@ -86,6 +86,18 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
   <em>Connected to C&C:Online under 🐧 Linux/Proton 9.0-2 (Fedora)</em>
 </p>
 
+## Env Var
+
+### `RA3_PATCH=ON|OFF` (ON)
+
+> "Wall Crash" Fix.
+
+When enabled patches a "NULL pointer dereference" game crash caused by a player ordering some structures (for example, wall) to move.<br />
+Apparently this is a common occurence when playing online where a griever will crash the game for the others when loosing.<br />
+This patch is enabled by default.
+
+NB: Red Alert 3 v1.12 only.
+
 ## Reminder for Online Play
 
 ### Registry

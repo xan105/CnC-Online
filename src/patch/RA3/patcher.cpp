@@ -12,12 +12,12 @@ All credits to lanyizi
 
 const GameVersionMap VERSIONS = {
   {"1.12", {
-    {RETAIL, 0xC5B6C4},
-    {DIGITAL, 0xC6262C}
+    {DIGITAL, 0xC6262C},
+    {RETAIL, 0xC5B6C4}
   }},
-  {"1.13", {
+  /*{"1.13", {
     {DIGITAL, 0x000000}, //TODO: 1.13 Memory address have changed
-  }}
+  }}*/
 };
 
 GameRelease GetReleaseVersion(std::string version) {
@@ -30,12 +30,12 @@ GameRelease GetReleaseVersion(std::string version) {
     return static_cast<GameRelease>(UNKNOWN);
 }
 
-bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* code) {
+bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* patch) {
     
     const SIZE_T jmpSize = 5;
     std::vector<BYTE> instruction(jmpSize, 0);
     instruction[0] = 0xE9; //'jmp' opcode
-    DWORD jmpTarget = reinterpret_cast<DWORD>(code);
+    DWORD jmpTarget = reinterpret_cast<DWORD>(patch);
     DWORD offset = jmpTarget - (address + jmpSize);
     std::memcpy(instruction.data() + 1, &offset, sizeof(offset));
     
@@ -55,28 +55,28 @@ bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* code) {
 void ApplyRA3Patches() {
 
     HANDLE hProcess = GetCurrentProcess();
-    TCHAR exePath[MAX_PATH];
+    TCHAR buffer[MAX_PATH];
     
-    if (GetModuleFileNameExW(hProcess, NULL, exePath, sizeof(exePath) / sizeof(TCHAR))) {
-        std::wstring executablePath = exePath;
-        size_t lastSlash = executablePath.find_last_of(L"\\");
-        std::wstring executableName = (lastSlash != std::wstring::npos) ? executablePath.substr(lastSlash + 1) : executablePath;
+    if (GetModuleFileNameExW(hProcess, NULL, buffer, sizeof(buffer) / sizeof(TCHAR))) {
+        std::wstring execPath = buffer;
+        size_t lastSlash = execPath.find_last_of(L"\\");
+        std::wstring execName = (lastSlash != std::wstring::npos) ? execPath.substr(lastSlash + 1) : execPath;
         
-        if (executableName == L"ra3_1.12.game") { 
+        if (execName == L"ra3_1.12.game") { 
             std::cout << "Red Alert 3 (v1.12): ";
             switch (GetReleaseVersion("1.12")) {
-                case RETAIL: {
-                    std::cout << "Retail Release (SecuROM DVD / Steam)" << std::endl;
-                    if (PatchInstruction(hProcess, 0x54EA88, &WallCrash_patch_retail) &&
-                        PatchInstruction(hProcess, 0x81D1F6, &WallCrash_patch_common)) {
-                      std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
-                    }
-                    break;
-                }
                 case DIGITAL: {
                     std::cout << "Digital Release (EA/Origin, Steam)" << std::endl;
                     if (PatchInstruction(hProcess, 0x590048, &WallCrash_patch_digital) &&
                         PatchInstruction(hProcess, 0x85B386, &WallCrash_patch_common)) {
+                      std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
+                    }
+                    break;
+                }
+                case RETAIL: {
+                    std::cout << "Retail Release (SecuROM DVD / Steam)" << std::endl;
+                    if (PatchInstruction(hProcess, 0x54EA88, &WallCrash_patch_retail) &&
+                        PatchInstruction(hProcess, 0x81D1F6, &WallCrash_patch_common)) {
                       std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
                     }
                     break;
