@@ -1,10 +1,23 @@
 /*
 Copyright (c) Anthony Beaumont
-This source code is licensed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3
+This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
 #include "util.h"
+
+std::wstring Getenv(LPCWSTR name) {
+    std::wstring buffer(65535, L'\0');
+    DWORD size = GetEnvironmentVariableW(name, &buffer[0], static_cast<DWORD>(buffer.size()));
+
+    if (size) {
+        buffer.resize(size);
+        return buffer;
+    }
+    else {
+        return L"";
+    }
+}
 
 void enableConsole() {
 

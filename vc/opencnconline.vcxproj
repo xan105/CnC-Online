@@ -94,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,6 +114,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +134,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +154,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,7 +168,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\dllmain.h" />
+    <ClInclude Include="..\src\keys.h" />
     <ClInclude Include="..\src\memory.h" />
+    <ClInclude Include="..\src\patch\RA3\patcher.h" />
+    <ClInclude Include="..\src\patch\RA3\wall_crash.h" />
     <ClInclude Include="..\src\util.h" />
     <ClInclude Include="..\src\version.h" />
   </ItemGroup>
@@ -174,6 +181,8 @@
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp" />
     <ClCompile Include="..\src\memory.cpp" />
+    <ClCompile Include="..\src\patch\RA3\patcher.cpp" />
+    <ClCompile Include="..\src\patch\RA3\wall_crash.cpp" />
     <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
