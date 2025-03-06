@@ -11,6 +11,12 @@ This project provides a patch through DLL injection or DLL sideloading to restor
 > [!NOTE]
 > This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by [Revora/CnC-Online](https://cnc-online.net/en/).
 
+## Download
+
+⬇️ [Latest release](https://github.com/xan105/CnC-Online/releases/latest).
+
+Scroll to the bottom to reach `assets` and download `opencnconline.7z`, the patch DLL is in the archive.
+
 ## Usage
 
 ### A) DLL Sideloading (easy)
@@ -88,15 +94,13 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
 
 ## Env Var
 
-### `RA3_PATCH=ON|OFF` (ON)
+#### `RA3_PATCH = ON|OFF` (ON)
 
 > "Wall Crash" Fix.
 
-When enabled patches a "NULL pointer dereference" game crash caused by a player ordering some structures (for example, wall) to move.<br />
-Apparently this is a common occurence when playing online where a griever will crash the game for the others when loosing.<br />
-This patch is enabled by default.
+When enabled patches a "NULL pointer dereference" game crash caused by a player ordering some structures (for example, wall) to move. Apparently this is a common occurence when playing online where a griever will crash the game for the others when loosing.
 
-NB: Red Alert 3 v1.12 only.
+This patch is enabled by default. Red Alert 3 v1.12 only.
 
 ## Reminder for Online Play
 
