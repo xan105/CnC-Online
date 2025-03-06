@@ -15,7 +15,7 @@ This project provides a patch through DLL injection or DLL sideloading to restor
 
 ⬇️ [Latest release](https://github.com/xan105/CnC-Online/releases/latest).
 
-Scroll to the bottom to reach `assets` and download `opencnconline.7z`, the patch DLL is in the archive.
+Scroll to the bottom to reach `Assets` and download `opencnconline.7z`, the patch DLL is in the archive.
 
 ## Usage
 
