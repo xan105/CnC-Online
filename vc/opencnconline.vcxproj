@@ -168,6 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\dllmain.h" />
+    <ClInclude Include="..\src\keys.h" />
     <ClInclude Include="..\src\memory.h" />
     <ClInclude Include="..\src\patch\RA3\patcher.h" />
     <ClInclude Include="..\src\patch\RA3\wall_crash.h" />
