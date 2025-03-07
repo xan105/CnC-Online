@@ -31,7 +31,7 @@ HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpF
         }
         else if (file == L"http://profile.ea.com/" ||                                                   //RA3
                 (file.size() >= 8 && _wcsicmp(file.c_str() + file.size() - 8, L"EREG.EXE") == 0)) {     //Kane's Wrath
-            file = file = toWString(hostname.at("register"));
+            file = toWString(hostname.at("register"));
         }
         else if (file.find(L"http://www.ea.com/redalert/") == 0 ) {                                     //RA3
             file = toWString(hostname.at("website"));
@@ -182,7 +182,7 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
     return pGetHostByName(host.c_str());
 }
 
-bool ModifyPublicKey(const std::vector<BYTE>& publicKey) {
+bool ModifyPublicKey() {
 
     MODULEINFO moduleInfo;
     HANDLE processHandle = GetCurrentProcess();
@@ -269,7 +269,7 @@ DWORD WINAPI Main(LPVOID lpReserved) {
         std::cerr << "Failed to set detour function." << std::endl;
     }
     
-    if (ModifyPublicKey(cncOnlinePublicKey)) {
+    if (ModifyPublicKey()) {
         std::cout << "Public key modified successfully." << std::endl;
     }
     else {
