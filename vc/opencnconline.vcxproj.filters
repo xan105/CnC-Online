@@ -33,7 +33,7 @@
     <ClInclude Include="..\src\patch\RA3\wall_crash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\keys.h">
+    <ClInclude Include="..\src\online.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,11 +12,11 @@ All credits to lanyizi
 
 const GameVersionMap VERSIONS = {
   {"1.12", {
-    {DIGITAL, 0xC6262C},
-    {RETAIL, 0xC5B6C4}
+    { DIGITAL, 0xC6262C },
+    { RETAIL, 0xC5B6C4 }
   }},
   /*{"1.13", {
-    {DIGITAL, 0x000000}, //TODO: 1.13 Memory address have changed
+    //TODO: 1.13 Memory address have changed
   }}*/
 };
 
@@ -39,7 +39,7 @@ bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* patch) {
     DWORD offset = jmpTarget - (address + jmpSize);
     std::memcpy(instruction.data() + 1, &offset, sizeof(offset));
     
-    bool writeSuccess = WriteBytesToMemory(hProcess, reinterpret_cast<LPVOID>(address), instruction, jmpSize);
+    bool writeSuccess = WriteBytesToMemory(hProcess, reinterpret_cast<LPVOID>(address), jmpSize, instruction);
     if (!writeSuccess) {
         return false;
     }
@@ -66,27 +66,43 @@ void ApplyRA3Patches() {
             std::cout << "Red Alert 3 (v1.12): ";
             switch (GetReleaseVersion("1.12")) {
                 case DIGITAL: {
-                    std::cout << "Digital Release (EA/Origin, Steam)" << std::endl;
+                    std::cout << "Digital Release (EA/Origin, Steam)." << std::endl;
                     if (PatchInstruction(hProcess, 0x590048, &WallCrash_patch_digital) &&
                         PatchInstruction(hProcess, 0x85B386, &WallCrash_patch_common)) {
-                      std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
+                      std::cout << "Applied RA3 \"Wall Crash\" fix." << std::endl;
                     }
                     break;
                 }
                 case RETAIL: {
-                    std::cout << "Retail Release (SecuROM DVD / Steam)" << std::endl;
+                    std::cout << "Retail Release (SecuROM DVD / Steam)." << std::endl;
                     if (PatchInstruction(hProcess, 0x54EA88, &WallCrash_patch_retail) &&
                         PatchInstruction(hProcess, 0x81D1F6, &WallCrash_patch_common)) {
-                      std::cout << "Applied RA3 \"Wall Crash\" fix" << std::endl;
+                      std::cout << "Applied RA3 \"Wall Crash\" fix." << std::endl;
                     }
                     break;
                 }
                 default: {
-                    std::cout << "Unknown Release" << std::endl;
+                    std::cout << "Unknown Release." << std::endl;
                   break;
                 }
             }
-        }
+        } /*else if (execName == L"ra3_1.13.game") { //TODO: 1.13 Memory address have changed
+            std::cout << "Red Alert 3 (v1.13): ";
+            switch (GetReleaseVersion("1.13")) {
+                case DIGITAL: {
+                    std::cout << "Digital Release (EA/Origin, Steam)." << std::endl;
+                    if (PatchInstruction(hProcess, 0x000000, &WallCrash_patch_digital) &&
+                        PatchInstruction(hProcess, 0x000000, &WallCrash_patch_common)) {
+                      std::cout << "Applied RA3 \"Wall Crash\" fix." << std::endl;
+                    }
+                    break;
+                }
+                default: {
+                    std::cout << "Unknown Release." << std::endl;
+                  break;
+                }
+            } 
+        }*/
     }
     
     CloseHandle(hProcess);

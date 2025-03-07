@@ -7,7 +7,7 @@ found in the LICENSE file in the root directory of this source tree.
 #include "dllmain.h"
 #include "memory.h"
 #include "util.h"
-#include "keys.h"
+#include "online.h"
 #include "patch/RA3/patcher.h"
 
 connect_t pConnect = nullptr;
@@ -23,18 +23,18 @@ HINSTANCE WINAPI detourShellExecuteW(HWND hwnd, LPCWSTR lpOperation, LPCWSTR lpF
         if (file == L"IEXPLORE.EXE") {                                                                  //Kane's Wrath
             std::wstring param(lpParameters);
             if (param == L"http://www.ea.com/global/legal/tos.jsp") {
-                file = L"https://cnc-online.net/en/faq/";
+                file = toWString(hostname.at("tos"));   
             }
             else if (param == L"http://www.commandandconquer.com") {
-                file = L"https://cnc-online.net/en/";
+                file = toWString(hostname.at("website"));
             }
         }
         else if (file == L"http://profile.ea.com/" ||                                                   //RA3
                 (file.size() >= 8 && _wcsicmp(file.c_str() + file.size() - 8, L"EREG.EXE") == 0)) {     //Kane's Wrath
-            file = L"https://cnc-online.net/en/connect/register/";
+            file = file = toWString(hostname.at("register"));
         }
         else if (file.find(L"http://www.ea.com/redalert/") == 0 ) {                                     //RA3
-            file = L"https://cnc-online.net/en/";
+            file = toWString(hostname.at("website"));
         }
 
         return pShellExecuteW(hwnd, lpOperation, file.c_str(), NULL, lpDirectory, nShowCmd);
@@ -50,16 +50,16 @@ int WSAAPI detourConnect(SOCKET s, const sockaddr* name, int namelen) {
   sockaddr_in* addr_in = (sockaddr_in*)name;
     if (addr_in->sin_family == AF_INET) { //IPv4
         int port = ntohs(addr_in->sin_port);
-        if (port == 6667) {
+        if (port == PORT_PEERCHAT) {
             if (useAltPeerChatPort) {
                 std::cout << "Using alt peer chat port" << std::endl;
-                addr_in->sin_port = htons(16667);
+                addr_in->sin_port = htons(PORT_PEERCHAT_ALT);
             } else {
                 int result = pConnect(s, name, namelen);
                 if (result == SOCKET_ERROR) {
                     std::cout << "Switching to alt peer chat port" << std::endl;
                     useAltPeerChatPort = true;
-                    addr_in->sin_port = htons(16667);
+                    addr_in->sin_port = htons(PORT_PEERCHAT_ALT);
                     result = pConnect(s, name, namelen);
                 }
                 return result;
@@ -78,7 +78,7 @@ int WSAAPI detourSend(SOCKET s, const char *buf, int len, int flags) {
 
         std::string updatedStr = str;
         std::string targetHost = "Host: na.llnet.eadownloads.ea.com";
-        std::string newHost = "Host: http.server.cnc-online.net"; 
+        std::string newHost = "Host: " + hostname.at("host"); 
 
         size_t pos = updatedStr.find(targetHost);
         if (pos != std::string::npos) {
@@ -105,7 +105,7 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
     if (host == "servserv.generals.ea.com" || 
         host == "na.llnet.eadownloads.ea.com") 
     {
-        host = "http.server.cnc-online.net";
+        host = hostname.at("host");
     }
     else if (host == "bfme.fesl.ea.com" || 
              host == "bfme2.fesl.ea.com" || 
@@ -114,15 +114,15 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
              host == "cnc3-ep1-pc.fesl.ea.com" || 
              host == "cncra3-pc.fesl.ea.com") 
     {
-        host = "login.server.cnc-online.net";
+        host = hostname.at("login");
     }
     else if (host == "gpcm.gamespy.com") 
     {
-        host = "gpcm.server.cnc-online.net";
+        host = hostname.at("gpcm");
     }
     else if (host == "peerchat.gamespy.com") 
     {
-        host = "peerchat.server.cnc-online.net";
+        host = hostname.at("peerchat");
     }
     else if (host == "lotrbme.available.gamespy.com" || 
              host == "lotrbme.master.gamespy.com" ||
@@ -143,19 +143,19 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
              host == "redalert3pc.ms1.gamespy.com" || 
              host == "master.gamespy.com") 
     {
-        host = "master.server.cnc-online.net";
+        host = hostname.at("master");
     }
     else if (host == "redalert3pc.natneg1.gamespy.com" || 
              host == "redalert3pc.natneg2.gamespy.com" ||
              host == "redalert3pc.natneg3.gamespy.com") 
     {
-        host = "natneg.server.cnc-online.net";
+        host = hostname.at("natneg");
     }
     else if (host == "lotrbme.gamestats.gamespy.com" || 
              host == "lotrbme2r.gamestats.gamespy.com" ||
              host == "gamestats.gamespy.com") 
     {
-        host = "gamestats.server.cnc-online.net";
+        host = hostname.at("stats");
     }
     else if (host == "cc3tibwars.auth.pubsvs.gamespy.com" || 
              host == "cc3tibwars.comp.pubsvs.gamespy.com" ||
@@ -168,7 +168,7 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
              host == "redalert3services.gamespy.com" ||
              host == "psweb.gamespy.com") 
     {
-        host = "sake.server.cnc-online.net";
+        host = hostname.at("sake");
     }
     else if (host == "lotrbfme.arenasdk.gamespy.com" || 
              host == "arenasdk.gamespy.com" ||
@@ -176,13 +176,13 @@ struct hostent* WSAAPI detourGetHostByName(const char *name) {
              host == "www.gamespy.com" ||
              host == "ingamead.gamespy.com") 
     {
-        host = "server.cnc-online.net";
+        host = hostname.at("server");
     }
-    
+
     return pGetHostByName(host.c_str());
 }
 
-bool ModifyPublicKey() {
+bool ModifyPublicKey(const std::vector<BYTE>& publicKey) {
 
     MODULEINFO moduleInfo;
     HANDLE processHandle = GetCurrentProcess();
@@ -194,11 +194,10 @@ bool ModifyPublicKey() {
 
     std::vector<BYTE> memory;
     if (ReadMemory(processHandle, moduleInfo.lpBaseOfDll, moduleInfo.SizeOfImage, memory)) {
-        SIZE_T foundOffset;
-        if (FindBytesInMemory(memory, eaPublicKey, foundOffset)) {
-            std::cout << "Public key found at offset: " << foundOffset << std::endl;
-
-            if (WriteBytesToMemory(processHandle, moduleInfo.lpBaseOfDll, cncOnlinePublicKey, foundOffset)) {
+        SIZE_T offset;
+        if (FindBytesInMemory(memory, eaPublicKey, offset)) {
+            std::cout << "Public key found at offset: 0x" << std::hex << offset << " (" << std::dec << offset << ")" << std::endl;
+            if (WriteBytesToMemory(processHandle, moduleInfo.lpBaseOfDll, offset, cncOnlinePublicKey)) {
                 std::cout << "Successfully wrote new pattern to memory." << std::endl;
                 return true;
             }
@@ -269,8 +268,8 @@ DWORD WINAPI Main(LPVOID lpReserved) {
     } else {
         std::cerr << "Failed to set detour function." << std::endl;
     }
-
-    if (ModifyPublicKey()) {
+    
+    if (ModifyPublicKey(cncOnlinePublicKey)) {
         std::cout << "Public key modified successfully." << std::endl;
     }
     else {

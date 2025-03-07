@@ -5,8 +5,19 @@ found in the LICENSE file in the root directory of this source tree.
 */
 
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <string>
 #include <vector>
+#include <unordered_map>
+
+#define PORT_PEERCHAT 6667
+#define PORT_PEERCHAT_ALT 16667
+
+/*
+- RA3 (Steam):
+  + 1.12 @ 0x893B68 (8993640)
+  + 1.13 @ 0x898DA8 (9014696)
+  Length: 128 bytes
+*/
 
 const std::vector<BYTE> eaPublicKey = {
     0x92, 0x75, 0xA1, 0x5B, 0x08, 0x02, 0x40, 0xB8,
@@ -44,4 +55,19 @@ const std::vector<BYTE> cncOnlinePublicKey = {
     0x74, 0x7C, 0x2C, 0xDA, 0x5A, 0x84, 0xDE, 0xC1,
     0xD0, 0x40, 0x26, 0x32, 0xC1, 0xA1, 0x80, 0xAD,
     0x0D, 0x07, 0xE5, 0xAD, 0x93, 0x0D, 0x2D, 0xF5
+};
+
+const std::unordered_map<std::string, std::string> hostname = {
+    {"host", "http.server.cnc-online.net"},
+    {"login", "login.server.cnc-online.net"},
+    {"gpcm", "gpcm.server.cnc-online.net"},
+    {"peerchat", "peerchat.server.cnc-online.net"},
+    {"master", "master.server.cnc-online.net"},
+    {"natneg", "natneg.server.cnc-online.net"},
+    {"stats", "gamestats.server.cnc-online.net"},
+    {"sake", "sake.server.cnc-online.net"},
+    {"server", "server.cnc-online.net"},
+    {"register", "https://cnc-online.net/en/connect/register/"},
+    {"website", "https://cnc-online.net/en/"},
+    {"tos", "https://cnc-online.net/en/faq/"}
 };

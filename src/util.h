@@ -10,3 +10,4 @@ found in the LICENSE file in the root directory of this source tree.
 
 std::wstring Getenv(LPCWSTR name);
 void enableConsole();
+std::wstring toWString(const std::string& s);

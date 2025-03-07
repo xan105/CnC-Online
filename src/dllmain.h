@@ -11,6 +11,7 @@ found in the LICENSE file in the root directory of this source tree.
 #include <ws2tcpip.h>
 #include <atomic>
 #include <iostream>
+#include <iomanip>
 #include "../vendor/Detour/detours.h"
 
 #if defined(_X86_)

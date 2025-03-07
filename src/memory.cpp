@@ -12,17 +12,17 @@ bool ReadMemory(HANDLE processHandle, LPCVOID baseAddress, SIZE_T size, std::vec
     return ReadProcessMemory(processHandle, baseAddress, buffer.data(), size, &bytesRead) && bytesRead == size;
 }
 
-bool FindBytesInMemory(const std::vector<BYTE>& memory, const std::vector<BYTE>& pattern, SIZE_T& foundOffset) {
+bool FindBytesInMemory(const std::vector<BYTE>& memory, const std::vector<BYTE>& pattern, SIZE_T& offset) {
     auto it = std::search(memory.begin(), memory.end(), pattern.begin(), pattern.end());
 
     if (it != memory.end()) {
-        foundOffset = std::distance(memory.begin(), it);
+        offset = std::distance(memory.begin(), it);
         return true;
     }
     return false;
 }
 
-bool WriteBytesToMemory(HANDLE processHandle, LPVOID baseAddress, const std::vector<BYTE>& newPattern, SIZE_T offset) {
+bool WriteBytesToMemory(HANDLE processHandle, LPVOID baseAddress, SIZE_T offset, const std::vector<BYTE>& newPattern) {
     // Calculate the target address
     BYTE* targetAddress = (BYTE*)baseAddress + offset;
 
