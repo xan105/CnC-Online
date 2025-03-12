@@ -94,13 +94,13 @@ I aimed to restore the online features of *Red Alert 3* without relying on their
 
 ## Env Var
 
-#### `RA3_PATCH=ON|OFF` (ON)
+🧪 Experimental features are behind env var flags.
+
+#### `RA3_PATCH=ON|OFF` (OFF)
 
 > "Wall Crash" Fix.
 
 When enabled patches a "NULL pointer dereference" game crash caused by a player ordering some structures (for example, wall) to move. Apparently this is a common occurrence when playing online where a griever will crash the game for the others when loosing.
-
-This patch is enabled by default. Red Alert 3 v1.12 only.
 
 ## Reminder for Online Play
 

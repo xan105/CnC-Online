@@ -28,8 +28,7 @@ bool WriteBytesToMemory(HANDLE processHandle, LPVOID baseAddress, SIZE_T offset,
 
     // Change the protection of the memory region
     DWORD oldProtect;
-    SIZE_T size = newPattern.size();
-    if (!VirtualProtectEx(processHandle, targetAddress, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
+    if (!VirtualProtectEx(processHandle, targetAddress, newPattern.size(), PAGE_EXECUTE_READWRITE, &oldProtect)) {
         std::cerr << "Failed to change memory protection." << std::endl;
         return false;
     }
@@ -38,7 +37,7 @@ bool WriteBytesToMemory(HANDLE processHandle, LPVOID baseAddress, SIZE_T offset,
     bool writeSuccess = WriteProcessMemory(processHandle, targetAddress, newPattern.data(), newPattern.size(), NULL);
 
     // Restore the old protection
-    if (!VirtualProtectEx(processHandle, targetAddress, size, oldProtect, &oldProtect)) {
+    if (!VirtualProtectEx(processHandle, targetAddress, newPattern.size(), oldProtect, &oldProtect)) {
         std::cerr << "Failed to restore memory protection." << std::endl;
         return false;
     }

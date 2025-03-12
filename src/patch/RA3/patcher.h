@@ -14,7 +14,8 @@ All credits to lanyizi
 #include <string>
 #include <vector>
 #include <iostream>
-#include "wall_crash.h"
+
+#pragma comment(lib, "version.lib")
 
 enum GameRelease {
     UNKNOWN,
@@ -27,4 +28,6 @@ using GameVersionMap = std::unordered_map<std::string, AddressMap>;
 
 GameRelease GetReleaseVersion(std::string version);
 bool PatchInstruction(HANDLE hProcess, uintptr_t address, void* patch);
+bool GetFileVersion(TCHAR* szPath, int& major, int& minor);
+const std::wstring GetFileName(TCHAR* szPath);
 void ApplyRA3Patches();

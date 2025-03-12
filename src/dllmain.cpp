@@ -276,7 +276,7 @@ DWORD WINAPI Main(LPVOID lpReserved) {
         std::cerr << "Failed to modify public key." << std::endl;
     }
     
-    bool patch = Getenv(L"RA3_PATCH") == L"OFF" ? false : true;
+    bool patch = Getenv(L"RA3_PATCH") == L"ON" ? true : false;
     if(patch) {
         ApplyRA3Patches();
     } else {
