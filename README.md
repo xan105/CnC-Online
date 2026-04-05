@@ -6,20 +6,18 @@
 
 This project provides a patch through DLL injection or DLL sideloading to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process. 
 
+**Update**: CnC-Online has now released a newer client called _"Tacitus"_ which work in a similar way as this project, ie: a patch DLL.<br /> Even so, I think this project is still worthwhile as it is open source and you can tinker with it.
+
 🐧 Running Linux ? This patch is compatible with Linux/Proton.
 
 > [!NOTE]
 > This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by [Revora/CnC-Online](https://cnc-online.net/en/).
 
-## Download
-
-⬇️ [Latest release](https://github.com/xan105/CnC-Online/releases/latest).
-
-Scroll to the bottom to reach `Assets` and download `opencnconline.7z`, the patch DLL is in the archive.
-
 ## Usage
 
-### A) DLL Sideloading (easy)
+Go the [Latest release](https://github.com/xan105/CnC-Online/releases/latest) page and scroll to the bottom to reach `Assets` and download `opencnconline.7z`, the patch DLL is in the archive.
+
+### A) DLL Sideloading (recommended)
 
 This patch DLL can act as a proxy to `winmm.dll` located in `C:\Windows\System32\`.
 
@@ -45,6 +43,7 @@ Example:
 ### B) DLL Injection (advanced)
 
 This patch was originally designed to work with my [RA3.exe re-implementation / alternative](https://github.com/xan105/RA3-Launcher), but it can also be used with any DLL injection tool of your choice.
+If you are interested by the story, I wrote about it [in my blog](https://xan105.com/blog/fixing-red-alert-3-co-op-on-linux).
 
 A quick google search will find you plenty on GitHub.<br />
 🐧 Linux: the classic combo `createRemoteThread()` + `LoadLibrary()` from `Kernel32` works under Wine/Proton.
@@ -81,7 +80,7 @@ Upon injection into the game process, the patch DLL performs the following actio
 ## Why not use the official CnC-Online launcher ?
 
 <p align="center">
-  <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/revora.png">
+  <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/revora.png"><br/>
   <em>CnC-Online launcher</em>
 </p>
 
@@ -152,3 +151,10 @@ Build
 
 Solution: `./vc/opencnconline.sln`<br />
 Output: `./build/output/${platform}/${config}`
+
+Github Actions
+==============
+
+`./.github/workflows/vs-build-on-windows.yaml`
+
+Build all targets (debug and release) and create a release.
