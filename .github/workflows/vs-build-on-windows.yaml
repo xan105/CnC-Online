@@ -56,6 +56,8 @@ jobs:
           Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $tmp | Out-Null
       
+          Get-ChildItem -Recurse .\build
+      
           Copy-Item ".\build\output\Win32\Release\opencnconline.dll" "$tmp\opencnconline.dll" -Force
           Copy-Item ".\README.md" $tmp -Force
           Copy-Item ".\LICENSE" $tmp -Force
