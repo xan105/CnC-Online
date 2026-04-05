@@ -80,6 +80,11 @@ Upon injection into the game process, the patch DLL performs the following actio
 
 ## Why not use the official CnC-Online launcher ?
 
+<p align="center">
+  <img src="https://github.com/xan105/CnC-Online/raw/main/screenshot/revora.png">
+  <em>CnC-Online launcher</em>
+</p>
+
 _"Launchers inception"_ (Launcher that starts another Launcher) is despised by many but it remains a matter of personal preference. 
 For me the core issue was that their launcher **did not work** with the Steam version nor with Linux/Proton when I tried it.
 
