@@ -1,0 +1,74 @@
+name: Build release on Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+        platform: [x86]
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v3
+        with:
+          vs-version: '17.0'   # VS 2022
+          msbuild-architecture: x64
+
+      - name: Build solution
+        run: msbuild ".\vc\opencnconline.sln" /t:"opencnconline:Rebuild" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-${{ matrix.configuration }}-${{ matrix.platform }}
+          path: build/**/output/**/*.dll
+          compression-level: 0
+        
+  package:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: build-*
+          merge-multiple: true
+          path: build
+
+      - name: Install 7-Zip
+        run: choco install 7zip -y
+
+      - name: Create 7z Archive
+        id: create-archive
+        shell: powershell
+        run: |
+          $name = "${{ github.repository }}" -split '/' | Select-Object -Last 1
+          $archivePath = ".\build\$name.7z"
+
+          $tmp = ".\build\release"
+          Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $tmp | Out-Null
+      
+          Copy-Item ".\build\Win32\Release\opencnconline.dll" "$tmp\opencnconline.dll" -Force
+          Copy-Item ".\README.md" $tmp -Force
+          Copy-Item ".\LICENSE" $tmp -Force
+
+          & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"
+
+          Remove-Item $tmp -Recurse -Force
+
+          Write-Output "filepath=$archivePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Upload release
+        uses: actions/upload-artifact@v6
+        with:
+          name: release
+          path: ${{ steps.create-archive.outputs.filepath }}
+          compression-level: 0
