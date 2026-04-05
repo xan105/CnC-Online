@@ -6,12 +6,12 @@
 
 This project provides a patch through DLL injection or DLL sideloading to restore online play features in games such as *Red Alert 3* using the [Revora/CnC-Online](https://cnc-online.net/en/) server. It serves as an alternative to the official CnC-Online launcher which use EasyHook for the patching process. 
 
-**Update**: CnC-Online has now released a newer client called _"Tacitus"_ which work in a similar way as this project, ie: a patch DLL.<br /> Even so, I think this project is still worthwhile as it is open source and you can tinker with it.
-
-🐧 Running Linux ? This patch is compatible with Linux/Proton.
+**Update**: CnC-Online has now released a newer client called _"Tacitus"_ which work in a similar way as this project, ie: a patch DLL. Even so, I think this project is still worthwhile as it is open source and you can tinker with it.
 
 > [!NOTE]
 > This patch was mainly tested with Red Alert 3, which is the primary focus of this project, but it works just fine with the other games supported by [Revora/CnC-Online](https://cnc-online.net/en/).
+
+🐧 Running Linux ? This patch is compatible with Linux/Proton.
 
 ## Usage
 
